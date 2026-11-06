@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FATEC ADS • Plataforma de Estudos</title>
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('fatec_theme_v1');
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <script src="lucide.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-top">
+        <div class="brand-wrapper">
+          <div class="brand-icon">
+            <i data-lucide="layers"></i>
+          </div>
+          <div class="brand-title">
+            <div class="brand-title-row">
+              <h1>Fatec Vestibular</h1>
+              <span class="badge">ADS Noturno</span>
+            </div>
+            <div class="brand-breadcrumb">
+              fatec <span>/</span> vestibular <span>/</span> ads-noturno
+            </div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="header-badges">
+            <span class="badge p2">Matemática & Lógica (Peso 2)</span>
+            <span class="badge outline">60 questões</span>
+            <span class="badge outline">5 horas de prova</span>
+          </div>
+
+          <button id="themeToggleBtn" class="theme-toggle-btn" title="Alternar tema claro/escuro" aria-label="Alternar tema">
+            <i data-lucide="sun" id="themeIcon"></i>
+            <span class="theme-toggle-label" id="themeLabel">Claro</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- NAV TABS -->
+      <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="matematicaTab">
+          <i data-lucide="calculator"></i>
+          Matemática & Lógica
+        </button>
+        <button class="tab-btn" data-tab="todasDisciplinasTab">
+          <i data-lucide="book-open"></i>
+          Disciplinas
+        </button>
+        <button class="tab-btn" data-tab="redacoesHistoricasTab">
+          <i data-lucide="history"></i>
+          Redações Anteriores
+        </button>
+        <button class="tab-btn" data-tab="propostasTreinoTab">
+          <i data-lucide="file-text"></i>
+          30 Propostas de Treino
+        </button>
+        <button class="tab-btn" data-tab="provasDownloadsTab">
+          <i data-lucide="download"></i>
+          Provas & Gabaritos
+        </button>
+        <button class="tab-btn" data-tab="redacaoStudioTab">
+          <i data-lucide="pen-tool"></i>
+          Studio de Redação
+        </button>
+        <button class="tab-btn" data-tab="simuladorTab">
+          <i data-lucide="timer"></i>
+          Simulador & Cronômetro
+        </button>
+        <button class="tab-btn" data-tab="estrategiaTab">
+          <i data-lucide="bar-chart-2"></i>
+          Padrões da Prova
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-content">
+
+    <!-- PROGRESS TRACKER -->
+    <div class="progress-card">
+      <div class="progress-header">
+        <h3>
+          <i data-lucide="check-square" class="icon-sm"></i>
+          Progresso no Conteúdo Programático
+        </h3>
+        <span id="overallProgressText" style="font-size: 0.8rem; font-weight: 500; color: var(--muted-foreground);">0 de 0 dominados (0%)</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="overallProgressBar"></div>
+      </div>
+    </div>
+
+    <!-- 1. ABA: MATEMÁTICA E LÓGICA (DESTAQUE ESPECIAL) -->
+    <section class="tab-panel active" id="matematicaTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="calculator"></i>
+          Matemática & Raciocínio Lógico
+        </h2>
+        <p>Conteúdos de Peso 2 para Análise e Desenvolvimento de Sistemas (Noturno), correspondendo a 36% da nota objetiva.</p>
+      </div>
+      <div id="matematicaContentArea"></div>
+    </section>
+
+    <!-- 2. ABA: TODAS AS DISCIPLINAS -->
+    <section class="tab-panel" id="todasDisciplinasTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="book-open"></i>
+          Conteúdos por Disciplina
+        </h2>
+        <p>Mapeamento de recorrência a partir das 8 provas oficiais da Fatec (444 questões). Peso 1 em ADS.</p>
+      </div>
+      <div class="grid-2" id="disciplinasGrid"></div>
+    </section>
+
+    <!-- 3. ABA: REDAÇÕES HISTÓRICAS (2020 - 2026) -->
+    <section class="tab-panel" id="redacoesHistoricasTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="history"></i>
+          Temas Oficiais de Redação (2020 a 2026)
+        </h2>
+        <p>Temas cobrados em cada edição e o eixo temático transversal que guiou o caderno de questões correspondente.</p>
+      </div>
+      <div class="grid-2" id="redacoesHistoricasGrid"></div>
+    </section>
+
+    <!-- 4. ABA: 30 PROPOSTAS DE TREINO -->
+    <section class="tab-panel" id="propostasTreinoTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="file-text"></i>
+          30 Propostas de Redação no Padrão Fatec
+        </h2>
+        <p>Propostas estruturadas por eixos temáticos com 3 textos de apoio na coletânea e formato de problema/solução.</p>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" class="search-input" placeholder="Filtrar propostas..." oninput="searchPropostas(this.value)">
+        <select class="filter-select" onchange="filterPropostas(this.value)">
+          <option value="all">Todas as Áreas (30 propostas)</option>
+          <option value="Tecnologia e Inteligência Artificial">Tecnologia & IA (1 a 6)</option>
+          <option value="Trabalho e Economia">Trabalho & Economia (7 a 11)</option>
+          <option value="Meio Ambiente e Cidades">Meio Ambiente & Cidades (12 a 16)</option>
+          <option value="Saúde e Bem-Estar">Saúde & Bem-Estar (17 a 20)</option>
+          <option value="Educação e Cultura">Educação & Cultura (21 a 25)</option>
+          <option value="Direitos, Sociedade e Esporte">Direitos, Sociedade & Esporte (26 a 30)</option>
+        </select>
+      </div>
+
+      <div class="grid-3" id="propostasGrid"></div>
+    </section>
+
+    <!-- 5. ABA: BAIXAR PROVAS E GABARITOS -->
+    <section class="tab-panel" id="provasDownloadsTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="download"></i>
+          Acervo de Provas e Gabaritos
+        </h2>
+        <p>Downloads diretos dos cadernos de prova e gabaritos oficiais organizados por semestre e ano (formato <code>prova-semestre-ano.pdf</code>).</p>
+      </div>
+
+      <div class="grid-2" id="provasDownloadsGrid"></div>
+    </section>
+
+    <!-- 6. ABA: STUDIO DE REDAÇÃO (CRONÔMETRO 1H) -->
+    <section class="tab-panel" id="redacaoStudioTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="pen-tool"></i>
+          Studio de Redação
+        </h2>
+        <p>Treino cronometrado com contagem de linhas (limite oficial da Fatec: 30 linhas).</p>
+      </div>
+
+      <div id="redacaoCurrentThemeBanner"></div>
+
+      <div class="grid-2" style="align-items: start;">
+        <div>
+          <div class="timer-container" style="margin-bottom: 1.2rem;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted-foreground); letter-spacing: 0.05em;">Tempo restante</div>
+            <div class="timer-display" id="redacaoTimerDisplay">60:00</div>
+            <div class="timer-controls">
+              <button class="btn btn-primary" id="redacaoTimerBtn" onclick="toggleRedacaoTimer()">
+                <i data-lucide="play" class="icon-sm"></i> Iniciar
+              </button>
+              <button class="btn btn-secondary" onclick="resetRedacaoTimer()">
+                <i data-lucide="rotate-ccw" class="icon-sm"></i> Reiniciar
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4 style="font-size: 0.88rem; font-weight: 600; color: var(--foreground); margin-bottom: 0.6rem;">Critérios de Avaliação da Banca</h4>
+            <ul style="font-size: 0.82rem; color: var(--muted-foreground); list-style: inside disc; display: flex; flex-direction: column; gap: 0.4rem;">
+              <li>Título obrigatório na folha definitiva.</li>
+              <li>Estrutura dissertativo-argumentativa com propostas objetivas.</li>
+              <li>Não copiar trechos da coletânea de textos.</li>
+              <li>Extensão máxima de 30 linhas em norma culta.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="redacao-pad">
+          <input type="text" placeholder="Título da redação..." style="width: 100%; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.9rem; margin-bottom: 0.75rem;">
+          <textarea id="redacaoTextarea" placeholder="Digite seu texto aqui..."></textarea>
+          <div class="redacao-pad-footer">
+            <span id="redacaoLineCount">0 / 30 linhas</span>
+            <span id="redacaoWordCount">0 palavras</span>
+            <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('redacaoTextarea').value); alert('Texto copiado!');">
+              <i data-lucide="copy" class="icon-sm"></i> Copiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. ABA: SIMULADOR & CRONÔMETRO DE PROVA (5H) -->
+    <section class="tab-panel" id="simuladorTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="timer"></i>
+          Simulador & Cronômetro
+        </h2>
+        <p>Calculadora de pontuação ponderada para ADS Noturno e cronômetro de 5 horas para simulados reais.</p>
+      </div>
+
+      <div class="grid-2" style="align-items: start;">
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--muted-foreground); letter-spacing: 0.05em;">Cronômetro de Simulado Oficial</div>
+          <div class="timer-display" id="simuladoTimerDisplay" style="margin: 1.2rem 0;">05:00:00</div>
+          <div style="font-size: 0.78rem; color: var(--muted-foreground); margin-bottom: 1rem;">Permanência mínima permitida em sala até 15:30.</div>
+          <div class="timer-controls">
+            <button class="btn btn-primary" id="simuladoTimerBtn" onclick="toggleSimuladoTimer()">
+              <i data-lucide="play" class="icon-sm"></i> Iniciar
+            </button>
+            <button class="btn btn-secondary" onclick="resetSimuladoTimer()">
+              <i data-lucide="rotate-ccw" class="icon-sm"></i> Reiniciar
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>Cálculo Ponderado (ADS Noturno)</span>
+            <span class="badge p2">Peso 2 aplicado</span>
+          </div>
+
+          <form id="simuladorForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.6rem;">
+            <div>
+              <label style="font-size: 0.75rem; color: var(--muted-foreground);">Matemática (máx 8, peso 2):</label>
+              <input type="number" id="simMat" min="0" max="8" value="6" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); margin-top: 0.2rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; color: var(--muted-foreground);">Raciocínio Lógico (máx 5, peso 2):</label>
+              <input type="number" id="simLog" min="0" max="5" value="4" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); margin-top: 0.2rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; color: var(--muted-foreground);">Multidisciplinar (máx 9):</label>
+              <input type="number" id="simMul" min="0" max="9" value="6" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); margin-top: 0.2rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; color: var(--muted-foreground);">Português (máx 8):</label>
+              <input type="number" id="simPor" min="0" max="8" value="6" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); margin-top: 0.2rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; color: var(--muted-foreground);">Inglês (máx 5):</label>
+              <input type="number" id="simIng" min="0" max="5" value="4" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); margin-top: 0.2rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem; color: var(--muted-foreground);">Ciências & Humanas (máx 25):</label>
+              <input type="number" id="simHum" min="0" max="25" value="16" style="width: 100%; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); margin-top: 0.2rem;">
+            </div>
+          </form>
+
+          <div style="margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-around; text-align: center;">
+            <div>
+              <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--muted-foreground);">Acertos Brutos</div>
+              <div id="resAcertosTotal" style="font-size: 1.25rem; font-weight: 600;">42 / 60</div>
+            </div>
+            <div>
+              <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--muted-foreground);">Pontos Ponderados</div>
+              <div id="resPontosPonderados" style="font-size: 1.25rem; font-weight: 600; color: #d8b4fe;">52 / 73</div>
+            </div>
+            <div>
+              <div style="font-size: 0.72rem; text-transform: uppercase; color: var(--muted-foreground);">Aproveitamento</div>
+              <div id="resAproveitamento" style="font-size: 1.25rem; font-weight: 600; color: #4ade80;">71.2%</div>
+            </div>
+          </div>
+
+          <div id="resFeedback" style="margin-top: 0.8rem; padding: 0.65rem; border-radius: var(--radius-sm); background: var(--secondary); font-size: 0.82rem; text-align: center; border: 1px solid var(--border);">
+            Pontuação competitiva para as vagas do período noturno.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. ABA: PADRÕES & ESTRATÉGIA -->
+    <section class="tab-panel" id="estrategiaTab">
+      <div class="section-head">
+        <h2>
+          <i data-lucide="bar-chart-2"></i>
+          Padrões da Prova da Fatec
+        </h2>
+        <p>Síntese estatística baseada em 444 questões e 8 exames oficiais.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Composição de Pesos em ADS</h3>
+          <p style="font-size: 0.82rem; color: var(--muted-foreground); margin-bottom: 0.75rem;">
+            Matemática e Lógica totalizam 36% da nota objetiva:
+          </p>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Disciplina</th>
+                  <th>Questões</th>
+                  <th>Peso</th>
+                  <th>Fatia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Matemática</strong></td>
+                  <td>8</td>
+                  <td><span class="badge p2">Peso 2</span></td>
+                  <td>22%</td>
+                </tr>
+                <tr>
+                  <td><strong>Raciocínio Lógico</strong></td>
+                  <td>5</td>
+                  <td><span class="badge p2">Peso 2</span></td>
+                  <td>14%</td>
+                </tr>
+                <tr>
+                  <td>Multidisciplinar</td>
+                  <td>9</td>
+                  <td>Peso 1</td>
+                  <td>12%</td>
+                </tr>
+                <tr>
+                  <td>Português</td>
+                  <td>8</td>
+                  <td>Peso 1</td>
+                  <td>11%</td>
+                </tr>
+                <tr>
+                  <td>Inglês</td>
+                  <td>5</td>
+                  <td>Peso 1</td>
+                  <td>7%</td>
+                </tr>
+                <tr>
+                  <td>Ciências & Humanas</td>
+                  <td>25</td>
+                  <td>Peso 1</td>
+                  <td>34%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Regras Estruturais da Banca</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem; font-size: 0.84rem; color: var(--foreground);">
+            <div>
+              <strong style="color: var(--foreground);">Tema condutor único:</strong>
+              <div style="color: var(--muted-foreground); font-size: 0.8rem;">Cada caderno é articulado em torno de um tema social, científico ou tecnológico que permeia todas as disciplinas.</div>
+            </div>
+            <div>
+              <strong style="color: var(--foreground);">Interpretação e leitura crítica:</strong>
+              <div style="color: var(--muted-foreground); font-size: 0.8rem;">Mais de 36% das questões trazem textos extensos com fontes, além de infográficos, charges e tabelas comparativas.</div>
+            </div>
+            <div>
+              <strong style="color: var(--foreground);">Fórmulas fornecidas no enunciado:</strong>
+              <div style="color: var(--muted-foreground); font-size: 0.8rem;">Fórmulas físicas e constantes são expressas no enunciado. Contas leves sem necessidade de calculadora.</div>
+            </div>
+            <div>
+              <strong style="color: var(--foreground);">Ausência de literatura clássica:</strong>
+              <div style="color: var(--muted-foreground); font-size: 0.8rem;">A banca não cobra escolas literárias formais. Textos servem estritamente para interpretação e análise linguística.</div>
+            </div>
+            <div>
+              <strong style="color: #f87171;">Eliminação por nota zero:</strong>
+              <div style="color: var(--muted-foreground); font-size: 0.8rem;">Zero na redação ou na prova objetiva resulta em desclassificação imediata do candidato.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE PROPOSTA COM TEXTOS DE APOIO -->
+  <div class="modal-overlay" id="propostaModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalPropostaTitle">Coletânea de Textos de Apoio</h3>
+        <button class="modal-close-btn" onclick="closePropostaModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalDynamicContent">
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
